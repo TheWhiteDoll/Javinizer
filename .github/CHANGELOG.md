@@ -5,7 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.1.0]
+## [1.1.3] - 12-16-2019
+### Fixed
+- Null series being added as a tag with `add-series-as-tag` true
+- R18 series string not uncensoring censored words
+- Additional R18 censored words
+
+### Changed
+- Tag from `Series: <tag>` to `<tag>`
+
+## [1.1.2] - 12-15-2019
+### Fixed
+- Additional issues to writing missing actresses to `r18-thumbs.csv`
+
+## [1.1.1] - 12-15-2019
+### Fixed
+- Videos with 2+ actresses not writing to `r18-thumbs.csv` if missing
+
+## [1.1.0] - 12-15-2019
 ### Added
 - Add `SetEmbyActorThumbs` parameter to push actor thumbnails to your Emby/Jellyfin instance
 - Add `BackupSettings` parameter to backup configuration files to an archive

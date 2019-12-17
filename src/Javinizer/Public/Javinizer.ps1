@@ -53,7 +53,7 @@ function Javinizer {
         The openthumbs parameter will open your r18-thumbs.csv file for you to view and edit.
 
     .PARAMETER SetEmbyActorThumbs
-        The setembyactorthumbs parameter will POST matching R18 actor images from `r18-thumbs.csv` to your Emby or Jellyfin instance
+        The setembyactorthumbs parameter will POST matching R18 actor images from `r18-thumbs.csv` to your Emby or Jellyfin instance.
 
     .PARAMETER R18
         The r18 parameter allows you to set your data source of R18 to true.
@@ -399,21 +399,16 @@ function Javinizer {
                     } else {
                         foreach ($video in $fileDetails) {
                             Write-Host "[$($MyInvocation.MyCommand.Name)] ($index of $($fileDetails.Count)) Sorting [$($video.OriginalFileName)]"
-                            if ($video.PartNumber -le '1' -or $Multi.IsPresent) {
+                            if ($video.PartNumber -ge '1' -or $Multi.IsPresent) {
                                 # Get data object for part 1 of a multipart video
                                 $dataObject = Get-AggregatedDataObject -FileDetails $video -Settings $settings -R18:$R18 -Dmm:$Dmm -Javlibrary:$Javlibrary -ScriptRoot $ScriptRoot -ErrorAction 'SilentlyContinue'
-                                $script:savedDataObject = $dataObject
+                                # $script:savedDataObject = $dataObject
                                 Set-JavMovie -DataObject $dataObject -Settings $settings -Path $video.OriginalFullName -DestinationPath $getDestinationPath.FullName -Force:$Force -ScriptRoot $ScriptRoot
-                            } elseif ($video.PartNumber -ge '2') {
+                            } <# elseif ($video.PartNumber -ge '2') {
                                 # Use the saved data object for the following parts
-                                $savedDataObject.PartNumber = $video.PartNumber
-                                $fileDirName = Get-NewFileDirName -DataObject $savedDataObject
-                                $savedDataObject.FileName = $fileDirName.FileName
-                                $savedDataObject.OriginalFileName = $fileDirName.OriginalFileName
-                                $savedDataObject.FolderName = $fileDirName.FolderName
-                                $savedDataObject.DisplayName = $fileDirName.DisplayName
-                                Set-JavMovie -DataObject $savedDataObject -Settings $settings -Path $video.OriginalFullName -DestinationPath $getDestinationPath.FullName -Force:$Force -ScriptRoot $ScriptRoot
-                            }
+                                $dataObject = Get-AggregatedDataObject -FileDetails $video -Settings $settings -R18:$R18 -Dmm:$Dmm -Javlibrary:$Javlibrary -ScriptRoot $ScriptRoot -ErrorAction 'SilentlyContinue'
+                                Set-JavMovie -DataObject $DataObject -Settings $settings -Path $video.OriginalFullName -DestinationPath $getDestinationPath.FullName -Force:$Force -ScriptRoot $ScriptRoot -ErrorAction 'SilentlyContinue'
+                            } #>
                             $index++
                         }
                     }

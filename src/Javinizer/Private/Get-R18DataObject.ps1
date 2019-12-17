@@ -14,9 +14,11 @@ function Get-R18DataObject {
         $movieDataObject = @()
         $replaceHashTable = @{
             'S********l'                     = 'Schoolgirl'
+            'S*********l'                    = 'School girl'
             'S**t'                           = 'Shit'
             'H*********n'                    = 'Humiliation'
-            'G*******g'                      = 'Gangbang'
+            'G*******g'                      = 'Gang bang'
+            'G******g'                       = 'Gangbang'
             'H*******m'                      = 'Hypnotism'
             'S*****t'                        = 'Student'
             'C***d'                          = 'Child'
@@ -24,14 +26,28 @@ function Get-R18DataObject {
             'D***k'                          = 'Drunk'
             'V*****t'                        = 'Violent'
             'M******r'                       = 'Molester'
+            'M****ter'                       = 'Molester'
             'Sch**lgirl'                     = 'Schoolgirl'
             'Sch**l'                         = 'School'
             '[Recommended For Smartphones] ' = ''
             'F***'                           = 'Fuck'
             'U**verse'                       = 'Universe'
             'V*****ed'                       = 'Violated'
-            'Y********l'                     = 'Young girl'
+            'V*****es'                       = 'Violates'
+            'V*****e'                        = 'Violate'
+            'Y********l'                     = 'Young Girl'
             'I****t'                         = 'Incest'
+            'S***e'                          = 'Slave'
+            'T*****e'                        = 'Torture'
+            'R**e'                           = 'Rape'
+            'R**ed'                          = 'Raped'
+            'M****t'                         = 'Molest'
+            'A*****ted'                      = 'Assaulted'
+            'A*****t'                        = 'Assault'
+            'D**gged'                        = 'Drugged'
+            'D**g'                           = 'Drug'
+            'SK**ls'                         = 'Skills'
+            'B***d'                          = 'Blood'
         }
     }
 
@@ -284,11 +300,17 @@ function Get-R18Series {
         $seriesUrl = ((($WebRequest.Content -split '<dt>Series:</dt>')[1] -split '">')[0] -split '"')[1]
         $series = Convert-HtmlCharacter -String $series
         $series = $series -replace '\n', ' '
+        foreach ($string in $replaceHashTable.GetEnumerator()) {
+            $series = $series -replace [regex]::Escape($string.Name), $string.Value
+        }
 
         if ($series -like '*...') {
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Performing GET on Uri [$seriesUrl]"
             $seriesSearch = Invoke-WebRequest -Uri $seriesUrl -Method Get -Verbose:$false
             $series = Convert-HtmlCharacter -String ((((($seriesSearch.Content -split '<div class="breadcrumbs">')[1]) -split '<\/span>')[0]) -split '<span>')[1]
+            foreach ($string in $replaceHashTable.GetEnumerator()) {
+                $series = $series -replace [regex]::Escape($string.Name), $string.Value
+            }
         }
 
         if ($series -like '</dd*') {

@@ -60,10 +60,17 @@ function Get-MetadataNfo {
 
 "@
         if ($Settings.Metadata.'add-series-as-tag' -eq 'True') {
-            $tagNfoString = @"
-    <tag>Series: $series</tag>
+            if ($null -ne $series -or $series -eq '') {
+                $tagNfoString = @"
+    <tag>$series</tag>
 
 "@
+            } else {
+                $tagNfoString = @"
+    <tag></tag>
+
+"@
+            }
             $nfoString = $nfoString + $tagNfoString
         }
 
@@ -174,11 +181,10 @@ function Get-MetadataNfo {
                         }
                     } else {
                         if (-not ($R18ThumbCsv.FullName -like $DataObject.Actress[$i])) {
-                            if (-not (($DataObject.ActressThumbUrl[$i] -notlike '*nowprinting*') -or ($null -ne $DataObject.ActressThumbUrl[$i]))) {
+                            if (-not (($DataObject.ActressThumbUrl[$i] -like '*nowprinting*') -or ($null -eq $DataObject.ActressThumbUrl[$i]) -or ($DataObject.ActressThumbUrl[$i] -eq ''))) {
                                 $actressFirstName, $actressLastName = $DataObject.Actress[$i] -split ' '
                                 $actressFullName = $actressFirstName + ' ' + $actressLastName
                                 $actressFullNameReversed = $actressLastName + ' ' + $actressFirstName
-
                                 $actressObject = [pscustomobject]@{
                                     FirstName        = $actressFirstName.Trim()
                                     LastName         = $actressLastName.Trim()
@@ -221,8 +227,6 @@ function Get-MetadataNfo {
 
 "@
                 }
-
-
             }
         }
 
